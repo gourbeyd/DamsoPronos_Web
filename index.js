@@ -54,7 +54,7 @@ app.get("/apiAll", (req, res) => {
 
 app.get("/conseilResults", (req, res) => {
     //res.json({ message: "Hello from server!" });
-    db.query("select date, HomeTeam, AwayTeam, prono, resultat, ODD_HOME, OD_DRAW_OR_AWAY, OD_AH2, gain, confidence, conseil, FTHG, FTAG from PRONOS join MATCHS on PRONOS.id = MATCHS.id where not(resultat is NULL) and (conseil=1 or conseil=2) order by date desc, confidence desc", function (err, result) {
+    db.query("select date, HomeTeam, AwayTeam, prono, resultat, ODD_HOME, OD_DRAW_OR_AWAY, OD_AH2, gain, confidence, conseil, FTHG, FTAG from PRONOS join MATCHS on PRONOS.id = MATCHS.id where not(resultat is NULL) and (conseil=1 or conseil=2 or conseil=3 or conseil=4) order by date desc, confidence desc", function (err, result) {
         if (err) throw err;
         
         conseilResults = Object.values(JSON.parse(JSON.stringify(result)))
@@ -68,7 +68,7 @@ app.get("/conseilResults", (req, res) => {
 
 app.get("/conseilStats", (req, res) => {
     //res.json({ message: "Hello from server!" });
-    db.query("SELECT x.benefice, x.nbparis, y.nbWon FROM (select sum(gain) as benefice, count(*) as nbparis from PRONOS join MATCHS on MATCHS.id = PRONOS.id where (conseil=1 or conseil=2) and not(resultat is NULL)) as x, (SELECT count(*) as nbWon FROM PRONOS where (conseil=1 or conseil=2) and gain>0 ) as y; ", 
+    db.query("SELECT x.benefice, x.nbparis, y.nbWon FROM (select sum(gain) as benefice, count(*) as nbparis from PRONOS join MATCHS on MATCHS.id = PRONOS.id where (conseil=1 or conseil=2 or conseil=4 or conseil=3) and not(resultat is NULL)) as x, (SELECT count(*) as nbWon FROM PRONOS where (conseil=1 or conseil=2 or conseil=3 or conseil=4) and gain>0 ) as y; ", 
         function (err, result) {
             if (err) throw err;
             res.send(JSON.parse(JSON.stringify(result)));
@@ -141,6 +141,18 @@ app.get("/api/stats", (req, res) => {
         res.json(statsData);
     });
 })
+
+
+app.get("/apiGame/*", (req, res) => {
+    let gameId = req.params['0']
+    //regex to validate format 
+
+    db.query("SELECT * from MATCHS JOIN PRONOS on MATCHS.id=PRONOS.id where MATCHS.id="+db.escape(gameId), 
+        function (err, result) {
+            if (err) throw err;
+            res.send(JSON.parse(JSON.stringify(result)));
+        });
+});
 
 app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
