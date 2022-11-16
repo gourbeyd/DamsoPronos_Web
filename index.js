@@ -41,7 +41,7 @@ app.get("/api", (req, res) => {
 
 app.get("/apiAll", (req, res) => {
     //res.json({ message: "Hello from server!" });
-    db.query("select date, HomeTeam, AwayTeam, prono, ODD_HOME, OD_DRAW_OR_AWAY, OD_AH2, confidence, conseil from PRONOS join MATCHS on PRONOS.id = MATCHS.id where resultat is NULL order by conseil desc, date asc, confidence desc", function (err, result) {
+    db.query("select MATCHS.id, date, HomeTeam, AwayTeam, prono, ODD_HOME, OD_DRAW_OR_AWAY, OD_AH2, confidence, conseil from PRONOS join MATCHS on PRONOS.id = MATCHS.id where resultat is NULL order by conseil desc, date asc, confidence desc", function (err, result) {
         if (err) throw err;
         let conseil = Object.values(JSON.parse(JSON.stringify(result)))
         for (key in conseil) {
@@ -54,7 +54,7 @@ app.get("/apiAll", (req, res) => {
 
 app.get("/conseilResults", (req, res) => {
     //res.json({ message: "Hello from server!" });
-    db.query("select date, HomeTeam, AwayTeam, prono, resultat, ODD_HOME, OD_DRAW_OR_AWAY, OD_AH2, gain, confidence, conseil, FTHG, FTAG from PRONOS join MATCHS on PRONOS.id = MATCHS.id where not(resultat is NULL) and (conseil=1 or conseil=2 or conseil=3 or conseil=4) order by date desc, confidence desc", function (err, result) {
+    db.query("select MATCHS.id as id, date, HomeTeam, AwayTeam, prono, resultat, ODD_HOME, OD_DRAW_OR_AWAY, OD_AH2, gain, confidence, conseil, FTHG, FTAG from PRONOS join MATCHS on PRONOS.id = MATCHS.id where not(resultat is NULL) and (conseil=1 or conseil=2 or conseil=3 or conseil=4) order by date desc, confidence desc", function (err, result) {
         if (err) throw err;
         
         conseilResults = Object.values(JSON.parse(JSON.stringify(result)))
