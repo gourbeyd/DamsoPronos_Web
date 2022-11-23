@@ -154,9 +154,15 @@ app.get("/apiGame/*", (req, res) => {
         });
 });
 
+app.get('/policy*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'policy.html'))
+    ;});
+
 app.get('*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'client', 'build', 'index.html'))
     ;});
+
+
 
 const PORT = process.env.PORT || 8100;
 console.log('server started on port:',PORT);
