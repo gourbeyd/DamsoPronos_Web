@@ -142,6 +142,7 @@ app.get("/api/stats", (req, res) => {
     });
 })
 
+app.use('/public', express.static(__dirname +'/public'));
 
 app.get("/apiGame/*", (req, res) => {
     let gameId = req.params['0']
@@ -156,6 +157,10 @@ app.get("/apiGame/*", (req, res) => {
 
 app.get('/policy*', (req, res) => {
     res.sendFile(path.resolve(__dirname, 'policy.html'))
+    ;});
+
+app.get('/contact*', (req, res) => {
+    res.sendFile(path.resolve(__dirname, 'contact.html'))
     ;});
 
 app.get('*', (req, res) => {
